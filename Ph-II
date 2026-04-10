@@ -1,0 +1,29 @@
+PHASE 2: Analytics Engine (Sub-agent: analytics)
+Build a client-side analytics layer that processes the synthetic data and produces the outputs we promised. This runs in the browser — no server. It can be a simple heuristic engine that produces plausible results. It does NOT need to be real ML. But the outputs must look like ML outputs.
+Stockout detection:
+
+For each outlet × SKU, calculate a rolling 8-week average sales velocity. Flag any week where actual sales = 0 but predicted velocity > 2 units as a "probable stockout." Calculate confidence (high if the outlet normally sells 10+/week and suddenly drops to 0; medium if velocity is 3-5; low if velocity is 2-3).
+Roll up: total probable stockout events per outlet, per SKU, per week. Convert to estimated revenue loss using MRP × predicted units.
+
+Demand forecasting (simulated):
+
+For each outlet × SKU, generate a "forecast" for the next 4 weeks using: trailing 8-week average, adjusted for seasonality (if current week falls in a known seasonal window, boost by the seasonal multiplier from the scheme calendar), adjusted for trend (simple linear slope over last 12 weeks).
+Show forecast vs. actual for historical weeks (the model "predicts" the past, and you show accuracy — aim for 75-85% MAPE which is realistic for this granularity).
+
+Outlet archetypes:
+
+Cluster the 500 outlets into 5-6 archetypes based on: total volume, SKU breadth (how many of the 20 SKUs they carry), price-tier skew (% of sales from premium vs. value SKUs), channel type, seasonality amplitude.
+Name the archetypes something intuitive: "Premium Urban" (high volume, Silk/Bournville heavy), "Value Suburban" (high volume, small packs), "Impulse Transit" (paan-plus, small packs, high frequency), "Steady Staples" (Bournvita/Tang dominant, low chocolate), "Festival Spiker" (low base but huge Diwali/Valentine's peaks), "Underperforming" (low volume across the board, likely under-distribution).
+
+Smart Basket:
+
+For each archetype, define the "ideal basket" — ranked list of SKUs with recommended order quantities per week.
+For any individual outlet, show: current ordering pattern vs. recommended basket. Highlight gaps: "This outlet orders 0 Silk but its archetype peers sell 8 units/week — opportunity."
+Calculate potential uplift per outlet if they adopted the recommended basket (simple: archetype median minus current, capped at 2× current to avoid absurd numbers).
+
+Lift simulation:
+
+Split the 500 outlets into "test" (250) and "control" (250), matched by archetype distribution.
+In test outlets, apply the smart basket (add the predicted uplift to their base sales). In control, keep base sales flat. Show the aggregate difference over 90 days as "simulated pilot result."
+
+Output: Functions/modules that take the JSON data as input and produce computed results. These feed directly into the visualization layer. No API calls. Everything is deterministic given the same input data.
