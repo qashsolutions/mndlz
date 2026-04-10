@@ -1,0 +1,49 @@
+HASE 3: Visualization & UI (Sub-agent: frontend)
+Build a single-page React app (or vanilla HTML/JS if simpler for GitHub Pages) with the following views. Design should be clean, premium, light background — use the color palette from our pitch slides: warm off-white (#F7F5F0) background, deep navy (#1B2A4A) for headings, burnt orange (#D4532D) for problem/risk indicators, deep teal (#2A7F62) for solutions/positive metrics, warm gold (#C49A2A) for data/neutral elements.
+Navigation: Top nav or sidebar with 6 views.
+View 1 — Territory Overview (landing page)
+
+Map of Hyderabad with 500 outlet pins, color-coded by health (green = healthy, amber = at-risk, red = probable stockout). Use Leaflet.js or a simple SVG map.
+Summary cards at top: Total outlets, Total revenue (trailing 30d), Stockout events detected, Revenue at risk, Average forecast accuracy.
+Clicking an outlet opens a detail panel (View 5).
+
+View 2 — Stockout Heatmap
+
+Matrix view: rows = top 20 SKUs, columns = beats (or pin codes). Cell color = stockout frequency (white → amber → red).
+Filters: time range (last 4 weeks / 12 weeks / 52 weeks), channel type, archetype.
+Below the matrix: "Revenue at risk" rollup — big number, broken down by SKU. This is the deliverable we promised. Make it feel like a finding, not a dashboard.
+Key insight callout box: "Dairy Milk Silk has the highest stockout rate (12%) concentrated in 3 beats — ₹X lakhs/month at risk."
+
+View 3 — Outlet Archetypes
+
+Visual cluster map (scatter plot or grouped cards) showing the 5-6 archetypes with outlet count, avg revenue, defining characteristics.
+Click into an archetype to see its ideal basket and the outlets assigned to it.
+This is the "outlet archetype map" deliverable.
+
+View 4 — Smart Basket
+
+Outlet selector (search/dropdown). Shows selected outlet's current ordering pattern (last 8 weeks avg) side by side with the AI-recommended basket.
+Visual diff: green bars for "add this SKU," red bars for "you're over-ordering this," gray for "on track."
+Estimated monthly uplift in ₹ if recommendations are adopted.
+This is the "per-store basket engine" deliverable.
+
+View 5 — Outlet Detail (drill-down)
+
+Selected outlet's profile: name, pin code, channel, beat, archetype assignment.
+Time series chart: actual sales vs. forecast for each SKU over 52 weeks. Highlight stockout events as red dots.
+Mini basket comparison (same as View 4 but inline).
+
+View 6 — Pilot Simulation (Lift vs. Control)
+
+Side-by-side comparison: test group (250 outlets with smart basket) vs. control group (250 outlets, status quo).
+Line chart: cumulative secondary sales over 90 days, diverging.
+Summary: "Test group showed X% lift in secondary sales, ₹Y lakhs incremental revenue over 90 days."
+"Scale / no-scale" recommendation box with bullet rationale.
+This is the "lift vs. control" and "scale / no-scale memo" deliverable.
+
+Global UI elements:
+
+Every view should have a small disclaimer footer: "Prototype — synthetic data for demonstration purposes"
+Mondelez brand names should appear naturally (Dairy Milk, Silk, 5 Star etc.) — this is their data, not ours.
+Numbers should use Indian formatting (₹, lakhs, crores).
+The prototype should feel like you're looking at a real analytics tool, not a mockup. Interactive filters, hover tooltips, clickable drill-downs.
