@@ -1,0 +1,41 @@
+Project: Mondelez India GT Intelligence — Interactive Prototype
+You are building a browser-based interactive prototype that demonstrates AI-driven value for Mondelez India's General Trade (kirana) channel. This will be hosted on GitHub Pages as a static site. It is a demo — not production software — but it must look and feel like a real analytics platform showing real outputs.
+Context: We are scoping a POC with Mondelez India's Asia CEO and global digital head. We promised two POCs: (1) predicting stockouts on hero SKUs, (2) optimizing SKU mix per outlet. We told them we'd deliver specific artifacts — stockout heatmap, revenue-at-risk sizing, outlet archetype map, per-store basket recommendations, lift measurement. This prototype makes those deliverables tangible using synthetic data.
+
+PHASE 1: Synthetic Data Generation (Sub-agent: data-gen)
+Generate realistic synthetic data that mimics Mondelez India GT channel data for one ZSM territory. Output as static JSON files bundled with the app.
+Territory: ~500 kirana outlets across 25–30 pin codes in a single metro region (use Hyderabad as the base — real pin codes, real area names).
+Outlet master (500 outlets):
+
+Outlet ID, name (realistic Indian shop names like "Sharma General Store", "Sri Lakshmi Kirana"), pin code, area name, channel type (grocery, paan-plus, general, cosmetic), beat ID (assign to ~40 beats), lat/long (approximate, within Hyderabad)
+
+SKU master (20 SKUs):
+
+Use real Mondelez brand names: Cadbury Dairy Milk (25g, 50g, Silk, Silk Bubbly), 5 Star (22g, 40g), Oreo (original, chocolate creme), Perk (22g), Gems (18g, packet), Celebrations (pack), Bournville (dark), Cadbury Chocobakes, Bournvita (200g, 500g), Tang (500g)
+Include MRP, category (chocolate / biscuit / malt beverage / powdered drink), pack size, margin tier
+
+Secondary sales (12 months, weekly):
+
+500 outlets × 20 SKUs × 52 weeks = ~520,000 rows
+Build realistic patterns: Dairy Milk and Silk spike during Valentine's (week 6-7), Diwali (week 43-44), Rakhi (week 32-33). Bournvita is steady year-round. Celebrations spikes only during gifting seasons. Small packs (25g, 22g) have higher velocity in transit/paan-plus outlets. Silk sells better in premium urban outlets. Tang peaks in summer (weeks 14-22).
+Inject stockout patterns: ~8% of outlet-SKU-weeks should show zero sales where the model would predict non-zero (simulating undetected stockouts). Cluster these — some outlets chronically stock out on specific SKUs. Some are seasonal (chocolate melts in summer → retailer stops ordering).
+Add noise: random variation ±20% week to week, some outlets are just slow, some are star performers.
+
+Distributor stock-on-hand (monthly snapshots):
+
+5 distributors serving the territory, monthly closing stock by SKU
+Show bullwhip: distributor has stock but outlets are empty (proof that primary ≠ secondary visibility)
+
+Returns/expiry:
+
+~3% of volume comes back as returns. Higher in summer for chocolate. Correlated with outlets that over-order infrequently rather than ordering small and often.
+
+Scheme calendar:
+
+8 promotions across the year: Diwali Celebrations push, Valentine's Silk campaign, Summer Tang drive, Back-to-school Bournvita, etc. Mark which weeks and which SKUs.
+
+Beat plan:
+
+40 beats, each visited once per week on a fixed day. Assign outlets to beats.
+
+Output: JSON files — outlets.json, skus.json, sales.json (can be split by quarter if size is an issue for GitHub Pages), distributors.json, returns.json, schemes.json, beats.json. Total payload should be under 5MB compressed. If sales.json is too large, aggregate to outlet × SKU × month (6,000 rows × 12 months = 72,000 rows) and keep weekly granularity only for the demo's "drill down" view on a subset of 50 outlets.
