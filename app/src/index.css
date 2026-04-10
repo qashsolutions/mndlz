@@ -275,6 +275,36 @@ body {
 }
 
 /* ============================================================
+   Scatter Plot
+   ============================================================ */
+.scatter-container {
+  background: var(--bg-white);
+  border-radius: var(--radius);
+  padding: 20px;
+  box-shadow: var(--shadow);
+  margin-bottom: 24px;
+}
+
+.scatter-container .section-title {
+  margin: 0 0 12px;
+}
+
+.scatter-tooltip {
+  background: var(--bg-white);
+  border: 1px solid var(--gray-300);
+  border-radius: 6px;
+  padding: 10px 14px;
+  font-size: 12px;
+  line-height: 1.6;
+  box-shadow: var(--shadow-md);
+}
+
+.scatter-tooltip strong {
+  font-size: 13px;
+  color: var(--navy);
+}
+
+/* ============================================================
    Heatmap
    ============================================================ */
 .heatmap-scroll {

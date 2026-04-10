@@ -133,7 +133,27 @@ export function stockoutSummary(events) {
     byOutlet[e.outletId].revenueAtRisk += e.revenueAtRisk;
   }
 
-  // By beat (needs outlet lookup — returned as outletId rollups for now)
+  // By week (1-52). Events from detectStockouts have `week` directly;
+  // events from detectStockoutsMonthly have `month` — map to midpoint week.
+  const byWeek = {};
+  for (const e of events) {
+    const w = e.week != null ? e.week : monthToMidWeek(e.month);
+    if (!byWeek[w]) byWeek[w] = { week: w, events: 0, revenueAtRisk: 0, topSkus: {} };
+    byWeek[w].events++;
+    byWeek[w].revenueAtRisk += e.revenueAtRisk;
+    if (!byWeek[w].topSkus[e.skuId]) byWeek[w].topSkus[e.skuId] = { skuId: e.skuId, skuName: e.skuName, count: 0 };
+    byWeek[w].topSkus[e.skuId].count++;
+  }
+  // Finalize: sort by week, convert topSkus to top-5 array
+  const byWeekArray = Object.values(byWeek)
+    .map(w => ({
+      week: w.week,
+      events: w.events,
+      revenueAtRisk: w.revenueAtRisk,
+      topSkus: Object.values(w.topSkus).sort((a, b) => b.count - a.count).slice(0, 5),
+    }))
+    .sort((a, b) => a.week - b.week);
+
   const byConfidence = { high: 0, medium: 0, low: 0 };
   for (const e of events) {
     byConfidence[e.confidence]++;
@@ -144,6 +164,16 @@ export function stockoutSummary(events) {
     totalRevenueAtRisk,
     bySku: Object.values(bySku).sort((a, b) => b.revenueAtRisk - a.revenueAtRisk),
     byOutlet: Object.values(byOutlet).sort((a, b) => b.revenueAtRisk - a.revenueAtRisk),
+    byWeek: byWeekArray,
     byConfidence,
   };
+}
+
+// Maps month (1-12) to a representative week (1-52) using the same
+// weeksPerMonth layout as the data generator: [4,4,5,4,4,5,4,5,4,4,5,4].
+function monthToMidWeek(month) {
+  const weeksPerMonth = [4, 4, 5, 4, 4, 5, 4, 5, 4, 4, 5, 4];
+  let weekStart = 1;
+  for (let m = 0; m < month - 1; m++) weekStart += weeksPerMonth[m];
+  return weekStart + Math.floor(weeksPerMonth[month - 1] / 2);
 }

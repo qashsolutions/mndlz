@@ -10,6 +10,7 @@ export default function StockoutHeatmap() {
   const svgRef = useRef();
   const [timeRange, setTimeRange] = useState('all'); // 'last4', 'last12', 'all'
   const [channelFilter, setChannelFilter] = useState('all');
+  const [archetypeFilter, setArchetypeFilter] = useState('all');
 
   const heatmapData = useMemo(() => {
     if (!data || !analytics) return null;
@@ -23,6 +24,15 @@ export default function StockoutHeatmap() {
     if (channelFilter !== 'all') {
       const outletIds = new Set(data.outlets.filter(o => o.channelType === channelFilter).map(o => o.outletId));
       events = events.filter(e => outletIds.has(e.outletId));
+    }
+
+    // Filter by archetype
+    if (archetypeFilter !== 'all') {
+      const arch = analytics.archetypeResult.archetypes.find(a => a.id === archetypeFilter);
+      if (arch) {
+        const outletIds = new Set(arch.outletIds);
+        events = events.filter(e => outletIds.has(e.outletId));
+      }
     }
 
     // Build outlet-to-beat map
@@ -44,7 +54,7 @@ export default function StockoutHeatmap() {
     }
 
     return { matrix, beatIds, events };
-  }, [data, analytics, timeRange, channelFilter]);
+  }, [data, analytics, timeRange, channelFilter, archetypeFilter]);
 
   // D3 heatmap rendering
   useEffect(() => {
@@ -120,6 +130,18 @@ export default function StockoutHeatmap() {
 
   }, [heatmapData, data]);
 
+  // Revenue-at-risk rollup from filtered events (not the unfiltered global stats)
+  const filteredSkuRisk = useMemo(() => {
+    if (!heatmapData) return [];
+    const bySku = {};
+    for (const e of heatmapData.events) {
+      if (!bySku[e.skuId]) bySku[e.skuId] = { skuId: e.skuId, skuName: e.skuName, events: 0, revenueAtRisk: 0 };
+      bySku[e.skuId].events++;
+      bySku[e.skuId].revenueAtRisk += e.revenueAtRisk;
+    }
+    return Object.values(bySku).sort((a, b) => b.revenueAtRisk - a.revenueAtRisk);
+  }, [heatmapData]);
+
   if (loading || !data || !analytics) return <LoadingScreen />;
 
   // Top insight
@@ -156,6 +178,15 @@ export default function StockoutHeatmap() {
             <option value="cosmetic">Cosmetic</option>
           </select>
         </div>
+        <div className="filter-group">
+          <label>Archetype</label>
+          <select value={archetypeFilter} onChange={e => setArchetypeFilter(e.target.value)}>
+            <option value="all">All Archetypes</option>
+            {analytics.archetypeResult.archetypes.map(a => (
+              <option key={a.id} value={a.id}>{a.name} ({a.outletCount})</option>
+            ))}
+          </select>
+        </div>
       </div>
 
       <div className="heatmap-scroll">
@@ -169,7 +200,7 @@ export default function StockoutHeatmap() {
             <tr><th>SKU</th><th>Events</th><th>Revenue at Risk</th></tr>
           </thead>
           <tbody>
-            {analytics.stockoutStats.bySku.slice(0, 10).map(s => (
+            {filteredSkuRisk.slice(0, 10).map(s => (
               <tr key={s.skuId}>
                 <td>{s.skuName}</td>
                 <td>{s.events}</td>

@@ -313,7 +313,7 @@ for (let oi = 0; oi < NUM_OUTLETS; oi++) {
       } else if (sku.category === 'chocolate' && w >= 14 && w <= 22 && seededRandom() < 0.15) {
         // Summer melt stockout
         isStockout = true;
-      } else if (seededRandom() < 0.04) {
+      } else if (seededRandom() < 0.06) {
         // Random stockout
         isStockout = true;
       }
@@ -444,10 +444,10 @@ for (let oi = 0; oi < NUM_OUTLETS; oi++) {
       );
       if (!salesRow || salesRow.units === 0) continue;
 
-      let returnRate = 0.03; // base 3%
+      let returnRate = 0.05; // base rate (effective ~3% after uniform random scaling)
       // Higher return in summer for chocolate
       if (sku.category === 'chocolate' && m >= 4 && m <= 7) {
-        returnRate = 0.06;
+        returnRate = 0.10;
       }
       if (returnProne) returnRate *= 2;
 
