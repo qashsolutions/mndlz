@@ -93,7 +93,18 @@ export default function OutletDetail() {
               ))}
             </ul>
           )}
-          <div className="empty-state"><p>Search for an outlet to view its detailed profile.</p></div>
+          <div className="empty-state">
+            <p>Search for an outlet to view its detailed profile, weekly sales trend, and basket recommendation.</p>
+            <p className="empty-state__hint">Try these examples (OUT0001–OUT0050 have weekly drill-down charts):</p>
+            <div className="quick-picks">
+              <button onClick={() => { setSelectedOutlet('OUT0001'); setSearch(''); }}>OUT0001</button>
+              <button onClick={() => { setSelectedOutlet('OUT0010'); setSearch(''); }}>OUT0010</button>
+              <button onClick={() => { setSelectedOutlet('OUT0025'); setSearch(''); }}>OUT0025</button>
+              <button onClick={() => setSearch('Sharma')}>Sharma</button>
+              <button onClick={() => setSearch('Reddy')}>Reddy</button>
+              <button onClick={() => setSearch('Ameerpet')}>Ameerpet</button>
+            </div>
+          </div>
         </div>
       )}
 
