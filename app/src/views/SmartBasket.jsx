@@ -134,7 +134,16 @@ export default function SmartBasket() {
 
       {!comparison && !search && (
         <div className="empty-state">
-          <p>Search for an outlet above to see its smart basket recommendation.</p>
+          <p>Search for an outlet above to see its AI-recommended basket.</p>
+          <p className="empty-state__hint">Try searching by name, ID, or area — for example:</p>
+          <div className="quick-picks">
+            <button onClick={() => setSearch('Sharma')}>Sharma</button>
+            <button onClick={() => setSearch('Lakshmi')}>Lakshmi</button>
+            <button onClick={() => setSearch('Jubilee Hills')}>Jubilee Hills</button>
+            <button onClick={() => { setSelectedOutlet('OUT0001'); }}>OUT0001</button>
+            <button onClick={() => { setSelectedOutlet('OUT0025'); }}>OUT0025</button>
+            <button onClick={() => setSearch('Kukatpally')}>Kukatpally</button>
+          </div>
         </div>
       )}
     </div>

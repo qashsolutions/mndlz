@@ -692,6 +692,37 @@ tbody tr:hover { background: var(--gray-100); }
   font-size: 14px;
 }
 
+.empty-state__hint {
+  font-size: 12px;
+  margin-top: 8px;
+  color: var(--gray-500);
+}
+
+.quick-picks {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 14px;
+}
+
+.quick-picks button {
+  padding: 6px 14px;
+  border: 1px solid var(--gray-300);
+  border-radius: 16px;
+  font-size: 12px;
+  background: var(--bg-white);
+  color: var(--navy);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.quick-picks button:hover {
+  background: var(--navy);
+  color: white;
+  border-color: var(--navy);
+}
+
 /* ============================================================
    Disclaimer
    ============================================================ */
