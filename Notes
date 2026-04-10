@@ -1,0 +1,37 @@
+PHASE 4: Deployment (Sub-agent: deploy)
+
+Package as a static site deployable to GitHub Pages.
+All data bundled as JSON in the repo.
+No environment variables, no API keys, no server.
+README.md with: what this is, how to run locally, how it's deployed, and a note that all data is synthetic.
+Create a gh-pages deployment config (GitHub Actions workflow or manual).
+
+
+Architecture notes:
+
+Keep it simple. React with Vite is fine. Or even plain HTML + D3/Chart.js if that's faster.
+For the map: Leaflet with OpenStreetMap tiles is the easiest path. Pin Hyderabad coordinates.
+For charts: Recharts (if React) or Chart.js (if vanilla). D3 for the heatmap matrix.
+The JSON data files are the "database." Load them on app init. Everything computes client-side.
+Create clear hooks/placeholders in the code where real data and real models would replace synthetic data and heuristics. Mark these with comments: // HOOK: Replace with real secondary sales API and // HOOK: Replace with ML forecast model endpoint.
+
+Sub-agent orchestration:
+
+data-gen runs first, outputs JSON files to /data
+analytics runs second, builds the computation modules that consume /data
+frontend runs third, builds the UI that calls analytics modules
+deploy runs last, packages and configures for GitHub Pages
+Each sub-agent should have its own CLAUDE.md with scope, inputs, outputs, and constraints.
+
+What this is NOT:
+
+Not production ML. The "forecasting" is a moving average with seasonal adjustment. That's fine.
+Not real data. Everything is synthetic. But it should be plausible enough that a Mondelez exec looks at it and thinks "this is what our data would show."
+Not a full product. It's a prototype that makes our slide deliverables tangible.
+
+Success criteria:
+
+An Asia CEO clicks through 6 views in 5 minutes and understands exactly what they'd get from a real pilot.
+The stockout heatmap makes them uncomfortable (that's the point — it shows a problem they can feel).
+The smart basket comparison makes them nod ("yes, that outlet should be carrying Silk").
+The lift simulation makes them want to run the real thing.
