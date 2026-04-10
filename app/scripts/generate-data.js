@@ -313,7 +313,7 @@ for (let oi = 0; oi < NUM_OUTLETS; oi++) {
       } else if (sku.category === 'chocolate' && w >= 14 && w <= 22 && seededRandom() < 0.15) {
         // Summer melt stockout
         isStockout = true;
-      } else if (seededRandom() < 0.04) {
+      } else if (seededRandom() < 0.06) {
         // Random stockout
         isStockout = true;
       }
